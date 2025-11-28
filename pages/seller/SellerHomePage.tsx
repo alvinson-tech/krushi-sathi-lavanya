@@ -226,8 +226,24 @@ const SellerHomePage: React.FC = () => {
     const maxBookingValue = useMemo(() => Math.max(...weeklyBookings.map((item) => item.value)), [weeklyBookings]);
 
     const handleQuickAction = (action: string) => {
-        // Placeholder – hook into actual flows once forms exist
-        alert(`${action} flow coming soon!`);
+        // Navigate to actual pages
+        switch (action) {
+            case 'Add New Equipment':
+            case 'Add New Listing':
+                navigate('/seller/equipment/add');
+                break;
+            case 'Add Pesticide / Fertilizer':
+                navigate('/seller/equipment/add');
+                break;
+            case 'Manage My Listings':
+                navigate('/seller/equipment');
+                break;
+            case 'Messages & Inquiries':
+                alert('Messaging feature coming soon!');
+                break;
+            default:
+                navigate('/seller/equipment');
+        }
     };
 
     const handleLogout = () => {
@@ -264,7 +280,7 @@ const SellerHomePage: React.FC = () => {
                             <img src={`https://i.pravatar.cc/56?u=${sellerName}`} alt="Seller avatar" className="w-12 h-12 rounded-2xl object-cover border-2 border-brand-green/40" />
                         </div>
                         <div className="relative">
-                            <button 
+                            <button
                                 onClick={() => setShowLangMenu(!showLangMenu)}
                                 className="p-2 rounded-full hover:bg-gray-100 transition-all smooth-transition transform hover:scale-110"
                                 aria-label="Language"

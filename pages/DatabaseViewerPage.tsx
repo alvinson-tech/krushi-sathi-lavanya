@@ -5,7 +5,10 @@ import { Link, useNavigate } from 'react-router-dom';
 interface DatabaseRecords {
     users: any[];
     equipment: any[];
-    labour_requests: any[];
+    labour_jobs: any[];
+    job_applications: any[];
+    equipment_bookings: any[];
+    labourer_profiles: any[];
     market_prices: any[];
 }
 
@@ -16,8 +19,46 @@ const DatabaseViewerPage: React.FC = () => {
     const [error, setError] = useState('');
     const [loading, setLoading] = useState(false);
     const [records, setRecords] = useState<DatabaseRecords | null>(null);
-    const [activeTab, setActiveTab] = useState<'users' | 'equipment' | 'labour_requests' | 'market_prices'>('users');
+    const [activeTab, setActiveTab] = useState<keyof DatabaseRecords>('users');
     const navigate = useNavigate();
+
+    // Check for existing session on mount
+    useEffect(() => {
+        const savedAuth = sessionStorage.getItem('admin-auth');
+        if (savedAuth) {
+            const { username: savedUsername, password: savedPassword } = JSON.parse(savedAuth);
+            setUsername(savedUsername);
+            setPassword(savedPassword);
+            setIsAuthenticated(true);
+            // Fetch records with saved credentials
+            fetchRecordsWithCredentials(savedUsername, savedPassword);
+        }
+    }, []);
+
+    const fetchRecordsWithCredentials = async (user: string, pass: string) => {
+        try {
+            const response = await fetch('http://localhost:3001/api/admin/records', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ username: user, password: pass }),
+            });
+
+            const data = await response.json();
+
+            if (!response.ok) {
+                throw new Error(data.error || 'Failed to fetch records');
+            }
+
+            setRecords(data);
+        } catch (err: any) {
+            setError(err.message);
+            // If fetch fails, clear session
+            sessionStorage.removeItem('admin-auth');
+            setIsAuthenticated(false);
+        }
+    };
 
     const handleLogin = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -39,6 +80,8 @@ const DatabaseViewerPage: React.FC = () => {
                 throw new Error(data.error || 'Login failed');
             }
 
+            // Save credentials to sessionStorage
+            sessionStorage.setItem('admin-auth', JSON.stringify({ username, password }));
             setIsAuthenticated(true);
             fetchRecords();
         } catch (err: any) {
@@ -71,6 +114,7 @@ const DatabaseViewerPage: React.FC = () => {
     };
 
     const handleLogout = () => {
+        sessionStorage.removeItem('admin-auth');
         setIsAuthenticated(false);
         setUsername('');
         setPassword('');
@@ -263,7 +307,7 @@ const DatabaseViewerPage: React.FC = () => {
                 {/* Tabs */}
                 <div className="bg-gray-800/50 backdrop-blur-lg rounded-xl border border-gray-700 overflow-hidden">
                     <div className="flex border-b border-gray-700 overflow-x-auto">
-                        {(['users', 'equipment', 'labour_requests', 'market_prices'] as const).map((tab) => (
+                        {(['users', 'equipment', 'labour_jobs', 'job_applications', 'equipment_bookings', 'labourer_profiles', 'market_prices'] as const).map((tab) => (
                             <button
                                 key={tab}
                                 onClick={() => setActiveTab(tab)}

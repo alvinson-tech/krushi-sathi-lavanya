@@ -3,6 +3,9 @@ import cors from 'cors';
 import { initDatabase } from './database.js';
 import usersRouter from './routes/users.js';
 import adminRouter from './routes/admin.js';
+import sellerRouter from './routes/seller.js';
+import labourerRouter from './routes/labourer.js';
+import farmerRouter from './routes/farmer.js';
 
 const app = express();
 const PORT = 3001;
@@ -18,6 +21,9 @@ console.log('✓ Database initialized');
 // Routes
 app.use('/api/users', usersRouter);
 app.use('/api/admin', adminRouter);
+app.use('/api/seller', sellerRouter);
+app.use('/api/labourer', labourerRouter);
+app.use('/api/farmer', farmerRouter);
 
 // Health check
 app.get('/api/health', (req, res) => {
