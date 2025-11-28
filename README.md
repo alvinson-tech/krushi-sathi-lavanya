@@ -1,725 +1,280 @@
-# Krushi Sathi 🌾
+# Krushi Sathi - Agricultural Platform
 
-## Overview
-
-**Krushi Sathi** is a comprehensive agricultural technology platform designed to empower Indian farmers by connecting them with modern farming equipment, skilled labor, real-time market prices, weather intelligence, and smart crop diversification strategies. Built with React, TypeScript, and Tailwind CSS, this web application bridges the gap between farmers, equipment sellers, and agricultural laborers.
-
----
-
-## Table of Contents
-
-1. [Features](#features)
-2. [Tech Stack](#tech-stack)
-3. [Project Structure](#project-structure)
-4. [Detailed File Descriptions](#detailed-file-descriptions)
-5. [Installation & Setup](#installation--setup)
-6. [Usage Guide](#usage-guide)
-7. [User Roles](#user-roles)
-8. [Key Functionalities](#key-functionalities)
-9. [Multi-Language Support](#multi-language-support)
-10. [Future Enhancements](#future-enhancements)
-
----
+A comprehensive agricultural platform connecting farmers, sellers, and labourers with features like equipment rental, labour hiring, weather forecasts, and market prices.
 
 ## Features
 
-### For Farmers 👨‍🌾
-- **Equipment Rental**: Browse and book tractors, harvesters, rotavators, and other farming equipment
-- **Labor Hiring**: Connect with verified, skilled farm laborers with transparent pricing
-- **Smart Diversification**: AI-powered dual-crop strategies for higher yields and year-round income
-- **Weather Forecast**: Real-time, location-based weather updates with 5-day forecasts
-- **Live Market Pricing**: Track real-time commodity prices across different markets and states
-- **Multi-Language Support**: Available in 8 Indian languages (English, Hindi, Marathi, Tamil, Telugu, Kannada, Gujarati, Bengali)
-
-### For Sellers 🏪
-- **Listing Management**: Create and manage equipment and agricultural input listings
-- **Booking Dashboard**: Track active bookings, earnings, and customer requests
-- **Analytics**: View weekly sales trends and performance metrics
-- **Communication Hub**: Direct messaging with farmers for inquiries and support
-- **Inventory Control**: Manage equipment availability and pricing dynamically
-
-### For Laborers 👷
-- **Job Marketplace**: Access to verified farming job opportunities
-- **Profile Management**: Showcase skills, experience, and availability
-- **Transparent Pricing**: Clear daily rates and job descriptions
-
----
+- 🌾 **Multi-role System** - Separate interfaces for Farmers, Sellers, and Labourers
+- 🔐 **User Authentication** - Secure registration and login
+- 💾 **SQLite Database** - Persistent data storage
+- 🗄️ **Admin Dashboard** - View and manage all database records
+- 🌐 **Bilingual Support** - English and Kannada language options
+- 📱 **Responsive Design** - Works on all devices
 
 ## Tech Stack
 
-- **Frontend Framework**: React 19.2.0
-- **Language**: TypeScript 5.8.3
-- **Routing**: React Router DOM 7.9.6
-- **Styling**: Tailwind CSS (via CDN)
-- **Build Tool**: Vite 6.2.0
-- **State Management**: React Context API (for language)
-- **Storage**: LocalStorage & SessionStorage
-- **APIs**: 
-  - OpenStreetMap (Nominatim) for geolocation
-  - OpenWeatherMap for weather data
+### Frontend
+- React 19.2.0
+- TypeScript
+- React Router DOM
+- Vite (Build tool)
 
----
+### Backend
+- Node.js
+- Express.js
+- SQLite (via sql.js)
+- CORS enabled
+
+## Prerequisites
+
+Before you begin, ensure you have the following installed:
+- **Node.js** (v18 or higher) - [Download here](https://nodejs.org/)
+- **npm** (comes with Node.js)
+- **Git** - [Download here](https://git-scm.com/)
+
+## Installation & Setup
+
+### 1. Clone the Repository
+
+```bash
+git clone <your-github-repo-url>
+cd krushi-sathi
+```
+
+### 2. Install Dependencies
+
+```bash
+npm install
+```
+
+This will install all required packages for both frontend and backend.
+
+### 3. Start the Application
+
+```bash
+npm run dev
+```
+
+This single command starts both servers:
+- **Backend API**: http://localhost:3001
+- **Frontend**: http://localhost:3000
+
+### 4. Access the Application
+
+- **Main Website**: http://localhost:3000
+- **Admin Dashboard**: http://localhost:3000/#/admin/database
+  - Username: `admin`
+  - Password: `admin123`
 
 ## Project Structure
 
 ```
 krushi-sathi/
-├── .gitignore                      # Git ignore rules
-├── App.tsx                         # Main application component with routing
-├── index.html                      # HTML entry point
-├── index.tsx                       # React entry point
-├── metadata.json                   # App metadata
-├── package.json                    # Dependencies and scripts
-├── package-lock.json               # Locked dependencies
-├── README.md                       # Project documentation (this file)
-├── tsconfig.json                   # TypeScript configuration
-├── types.ts                        # Global TypeScript type definitions
-├── vite.config.ts                  # Vite build configuration
-│
+├── server/                  # Backend server
+│   ├── server.js           # Express server entry point
+│   ├── database.js         # SQLite database configuration
+│   ├── routes/             # API routes
+│   │   ├── users.js        # User authentication routes
+│   │   └── admin.js        # Admin routes
+│   └── krushi-sathi.db     # SQLite database (auto-generated)
+├── pages/                   # React pages/components
+│   ├── LandingPage.tsx
+│   ├── LoginPage.tsx
+│   ├── RegistrationPage.tsx
+│   ├── DatabaseViewerPage.tsx
+│   ├── farmer/             # Farmer-specific pages
+│   ├── seller/             # Seller-specific pages
+│   └── labourer/           # Labourer-specific pages
+├── services/
+│   └── db.ts               # Frontend API service
 ├── contexts/
-│   └── LanguageContext.tsx         # Multi-language context provider
-│
-├── pages/
-│   ├── LandingPage.tsx             # Public landing page
-│   ├── LoginPage.tsx               # User authentication page
-│   ├── RegistrationPage.tsx        # User registration page
-│   │
-│   ├── farmer/
-│   │   ├── FarmerHomePage.tsx      # Farmer dashboard
-│   │   ├── RentEquipmentPage.tsx   # Equipment rental marketplace
-│   │   ├── HireLabourPage.tsx      # Labor hiring interface
-│   │   ├── SmartDiversificationPage.tsx  # Crop diversification strategies
-│   │   ├── WeatherForecastPage.tsx # Weather intelligence
-│   │   └── MarketPricePage.tsx     # Live commodity pricing
-│   │
-│   ├── seller/
-│   │   └── SellerHomePage.tsx      # Seller dashboard with analytics
-│   │
-│   └── labourer/
-│       └── LabourerHomePage.tsx    # Laborer job marketplace
-│
-└── services/
-    └── db.ts                       # Local database service (localStorage wrapper)
+│   └── LanguageContext.tsx # Language switching context
+├── App.tsx                 # Main app component
+├── index.tsx               # App entry point
+└── package.json            # Dependencies and scripts
+
 ```
 
----
+## Available Scripts
 
-## Detailed File Descriptions
+- **`npm run dev`** - Start both frontend and backend servers (recommended)
+- **`npm run server`** - Start only the backend server
+- **`npm run client`** - Start only the frontend server
+- **`npm run build`** - Build for production
 
-### Root Level Files
+## Database
 
-#### `.gitignore`
-Specifies intentionally untracked files that Git should ignore:
-- `node_modules/` - Dependencies
-- `dist/` - Build output
-- `*.local` - Local environment files
-- Editor-specific directories (`.vscode/`, `.idea/`)
+### Automatic Setup
+The SQLite database is automatically created on first run with the following tables:
+- `users` - User accounts (farmers, sellers, labourers)
+- `equipment` - Equipment listings (for future features)
+- `labour_requests` - Labour hiring requests (for future features)
+- `market_prices` - Crop market prices (for future features)
+- `admin_users` - Admin credentials
 
-#### `App.tsx`
-The main React component that orchestrates the entire application:
-- Wraps the app in `LanguageProvider` for multi-language support
-- Configures `HashRouter` for client-side routing
-- Defines all application routes for different user roles
-- Routes include landing page, authentication, and role-specific dashboards
+### Default Admin Account
+- **Username**: `admin`
+- **Password**: `admin123`
 
-#### `index.html`
-The single-page application shell:
-- Imports Tailwind CSS via CDN for styling
-- Configures custom Tailwind theme with brand colors (`brand-green`, `brand-yellow`, `brand-brown`)
-- Defines custom animations (fade-in, float, sparkle, shimmer)
-- Sets up React import maps for ESM modules
-- Includes custom scrollbar hiding and sparkle effects
+> ⚠️ **Security Note**: Change the default admin password in production!
 
-#### `index.tsx`
-React application entry point:
-- Creates the root React element
-- Renders the `App` component in StrictMode
-- Mounts the application to the DOM
+### Database Location
+The database file is created at: `server/krushi-sathi.db`
 
-#### `package.json`
-Project configuration and dependencies:
-- **Scripts**: `dev` (development server), `build` (production build), `preview` (preview build)
-- **Dependencies**: React, React DOM, React Router DOM
-- **DevDependencies**: TypeScript, Vite, Vite React plugin, Node types
+## API Endpoints
 
-#### `tsconfig.json`
-TypeScript compiler configuration:
-- Target: ES2022 with DOM support
-- Module system: ESNext with bundler resolution
-- Enables JSX with React 17+ automatic runtime
-- Path aliases (`@/*` maps to project root)
-- Experimental decorators enabled
+### User Endpoints
+- `POST /api/users/register` - Register new user
+- `POST /api/users/login` - User login
 
-#### `types.ts`
-Global TypeScript type definitions:
-```typescript
-- UserRole: 'FARMER' | 'SELLER' | 'LABOURER'
-- User: Complete user object with id, name, email, password, role
-- UserRegistrationData: User data without auto-generated id
-```
+### Admin Endpoints (Protected)
+- `POST /api/admin/login` - Admin login
+- `POST /api/admin/records` - Get all database records
+- `POST /api/admin/delete` - Delete a record
 
-#### `vite.config.ts`
-Vite build tool configuration:
-- Development server on port 3000
-- React plugin integration
-- Environment variable injection (Gemini API key)
-- Path aliases resolution for clean imports
+### Health Check
+- `GET /api/health` - Check if API is running
 
----
+## Setting Up on a New Machine
 
-### Contexts
+### Step-by-Step Guide
 
-#### `contexts/LanguageContext.tsx`
-**Purpose**: Provides multi-language support across the entire application
-
-**Key Features**:
-- Manages current language state (8 languages supported)
-- Persists language preference in localStorage
-- Provides translation function `t(key)` to all components
-- Includes translations for common UI elements (welcome, logout, feature names)
-
-**Languages Supported**:
-- English (en), Hindi (hi), Marathi (mr), Tamil (ta), Telugu (te), Kannada (kn), Gujarati (gu), Bengali (bn)
-
-**Usage Example**:
-```typescript
-const { language, setLanguage, t } = useLanguage();
-<button>{t('logout')}</button>
-```
-
----
-
-### Pages
-
-#### `pages/LandingPage.tsx`
-**Purpose**: Marketing page showcasing platform features
-
-**Components**:
-- **Header**: Navigation with login button
-- **HeroSection**: Animated hero banner with gradient background and brand messaging
-- **FeaturesSection**: 6 feature cards (equipment rental, labor services, weather, diversification, market pricing, multi-language)
-- **HowItWorksSection**: 5-step process visualization (Search → Compare → Book → Track → Pay)
-- **ShowcaseSection**: Image showcase highlighting mobile-first design
-- **StatsSection**: Animated counters showing platform statistics
-- **TestimonialsSection**: Rotating farmer testimonials with carousel
-- **CtaSection**: Call-to-action banner encouraging sign-up
-- **Footer**: Links and copyright information
-
-**Animations**: Intersection Observer-based reveal animations for smooth scrolling experience
-
----
-
-#### `pages/LoginPage.tsx`
-**Purpose**: User authentication interface
-
-**Key Features**:
-- **Role Selection**: Sliding tab selector for Farmer/Seller/Laborer
-- **Dynamic Background**: Rotating agricultural images with fade transitions
-- **Form Validation**: Email and password validation
-- **Role Verification**: Ensures users login with their registered role
-- **Error Handling**: Displays authentication errors inline
-- **Responsive Design**: Mobile-optimized with backdrop blur effects
-
-**Flow**:
-1. User selects role (default: Farmer)
-2. Enters credentials
-3. System validates against localStorage database
-4. Redirects to role-specific dashboard on success
-
----
-
-#### `pages/RegistrationPage.tsx`
-**Purpose**: New user account creation
-
-**Key Features**:
-- **Multi-Role Support**: Single registration form for all user types
-- **Password Confirmation**: Double-entry password validation
-- **Duplicate Detection**: Prevents multiple accounts with same email
-- **Visual Consistency**: Matches LoginPage design language
-- **Immediate Feedback**: Real-time validation and error messages
-
-**Data Captured**:
-- Full name
-- Email address
-- Password (hashed in production)
-- User role (Farmer/Seller/Laborer)
-
----
-
-### Farmer Pages
-
-#### `pages/farmer/FarmerHomePage.tsx`
-**Purpose**: Main dashboard for farmers
-
-**Key Sections**:
-1. **Header**: 
-   - User avatar with upload capability (localStorage-based)
-   - Location detection using Geolocation API + Nominatim reverse geocoding
-   - Language selector dropdown
-   - Logout button
-
-2. **Hero Banner**: 
-   - 3 rotating slides showcasing core features
-   - Parallax scroll effect
-   - Auto-carousel with manual controls
-
-3. **Quick Actions Grid**:
-   - 5 large action cards (Equipment Rental, Labor Hiring, Weather, Diversification, Market Pricing)
-   - Each card features high-quality images, descriptions, and direct navigation
-   - Hover effects with scale and overlay animations
-
-**Technical Highlights**:
-- Localized copy system with 8 language variants
-- Real-time geolocation with fallback to coordinates
-- Profile picture persistence in localStorage (base64 encoding)
-
----
-
-#### `pages/farmer/RentEquipmentPage.tsx`
-**Purpose**: Equipment rental marketplace
-
-**Features**:
-- **Equipment Catalog**: 6 equipment types (Tractor, Harvester, Rotavator, Sprayer, Plough, Seed Drill)
-- **Horizontal Scroll Gallery**: Touch-friendly carousel with navigation arrows
-- **Availability Indicators**: Real-time status badges (Available/Booked)
-- **Pricing Information**: Hourly/daily rates with distance from user
-- **Instant Booking**: One-click booking with confirmation
-
-**Data Displayed per Item**:
-- Equipment name and image
-- Rental rate (per hour/day)
-- Distance from farmer
-- Availability status
-- Brief description
-
----
-
-#### `pages/farmer/HireLabourPage.tsx`
-**Purpose**: Connect farmers with skilled laborers
-
-**Features**:
-- **Skill Filtering**: Filter by specialization (Harvesting, Sowing, Irrigation, Weeding, etc.)
-- **Laborer Profiles**: 
-  - Profile photo
-  - Name and skill
-  - Experience years
-  - Star rating (1-5)
-  - Completed jobs count
-  - Daily rate
-  - Location
-  - Contact phone
-  - Languages spoken
-
-- **Instant Hire**: Direct contact initiation with phone number
-
-**Profile Cards**: Elevated design with hover animations and comprehensive worker information
-
----
-
-#### `pages/farmer/SmartDiversificationPage.tsx`
-**Purpose**: AI-powered crop diversification strategies
-
-**Features**:
-- **Strategy Cards**: 4 dual-crop combinations
-  1. Wheat + Mustard (Rabi season)
-  2. Rice + Fish Farming (Kharif season)
-  3. Sugarcane + Intercropping (Year-round)
-  4. Cotton + Pulses (Kharif season)
-
-- **Benefits Visualization**: Each strategy shows:
-  - Seasonal timing
-  - Expected benefits (yield increase, soil health, income diversification)
-  - High-quality agricultural imagery
-  - "Learn More" call-to-action
-
-**Purpose**: Helps farmers maximize land productivity and reduce monocropping risks
-
----
-
-#### `pages/farmer/WeatherForecastPage.tsx`
-**Purpose**: Real-time weather intelligence for crop planning
-
-**Features**:
-- **Current Weather**: 
-  - Temperature, condition (Sunny/Cloudy/Rainy)
-  - Humidity percentage
-  - Wind speed
-  - Rain probability
-  - Sunrise/sunset times
-
-- **5-Day Forecast**: Daily high/low temperatures with weather icons
-
-- **City Search**: Dynamic location search with OpenWeatherMap API
-
-- **Fallback Mechanism**: Mock data generation when API fails (for demo purposes)
-
-**API Integration**:
-- OpenWeatherMap API for real weather data
-- Graceful fallback to mock data for reliability
-- Rate limiting and error handling
-
----
-
-#### `pages/farmer/MarketPricePage.tsx`
-**Purpose**: Real-time commodity price tracking
-
-**Features**:
-- **Market Selection**: Dropdown for 8 major Indian cities
-- **Crop Selection**: 10 common crops/vegetables
-- **Live Pricing**: Real-time price per quintal
-- **Trend Indicators**: Up/down/stable arrows with percentage change
-- **Multi-Market Comparison**: View prices across different mandis
-
-**Price Cards Display**:
-- Current price (₹)
-- Price unit (per quintal)
-- Trend direction and percentage change
-- Market location
-
-**Use Case**: Helps farmers identify best selling opportunities and timing
-
----
-
-### Seller Pages
-
-#### `pages/seller/SellerHomePage.tsx`
-**Purpose**: Comprehensive seller dashboard with business analytics
-
-**Key Sections**:
-
-1. **Summary Cards**:
-   - Active Listings count
-   - Monthly earnings (₹)
-   - Upcoming bookings
-   - Average rating
-
-2. **Quick Actions**:
-   - Add New Equipment
-   - Add Pesticide/Fertilizer
-   - Manage Listings
-   - Messages & Inquiries
-
-3. **Sales Analytics**:
-   - Weekly booking bar chart
-   - Daily average calculations
-   - Top equipment identification
-
-4. **Active Listings**:
-   - Horizontal scrollable gallery
-   - Equipment status (Available/Low Stock/Paused)
-   - Edit/Pause controls per listing
-   - Image, price, rating, and booking count
-
-5. **Booking Requests**:
-   - Pending farmer requests
-   - Equipment/input details
-   - Time slots
-   - Accept/Reject actions
-
-6. **Messages Hub**:
-   - Unread message indicators
-   - Farmer inquiries
-   - Quick response interface
-
-7. **Promotional Tips**:
-   - Best practices for higher visibility
-   - Image quality recommendations
-   - Response time targets
-
-**Design Philosophy**: Information-dense dashboard optimized for business management
-
----
-
-### Laborer Pages
-
-#### `pages/labourer/LabourerHomePage.tsx`
-**Purpose**: Job marketplace for agricultural laborers
-
-**Current State**: Placeholder implementation with "Coming Soon" message
-
-**Planned Features**:
-- Job listings from farmers
-- Skill-based job matching
-- Application tracking
-- Earnings history
-- Availability calendar
-
----
-
-### Services
-
-#### `services/db.ts`
-**Purpose**: Local database abstraction layer using browser storage
-
-**Key Functions**:
-
-1. **User Management**:
-   ```typescript
-   registerUser(userData): Promise<User>
-   - Creates new user account
-   - Checks for duplicate emails
-   - Stores in localStorage
-   
-   loginUser(email, password): Promise<User>
-   - Validates credentials
-   - Returns user object on success
-   
-   getUsers(): User[]
-   - Retrieves all registered users
-   
-   saveUsers(users): void
-   - Persists users to localStorage
-   ```
-
-2. **Session Management**:
-   ```typescript
-   setCurrentUser(user): void
-   - Stores active session in sessionStorage
-   
-   getCurrentUser(): User | null
-   - Retrieves current logged-in user
-   
-   logoutUser(): void
-   - Clears session data
-   ```
-
-**Storage Keys**:
-- `krushi-sathi-users`: User database (localStorage)
-- `krushi-sathi-session`: Active session (sessionStorage)
-
-**Why LocalStorage?**
-- No backend required for MVP/demo
-- Instant setup for development
-- Easy migration to real database later
-- Data persists across browser sessions
-
----
-
-## Installation & Setup
-
-### Prerequisites
-- Node.js (v18 or higher)
-- npm or yarn package manager
-
-### Steps
-
-1. **Clone the repository**:
+1. **Clone the repository**
    ```bash
-   git clone <repository-url>
+   git clone <your-repo-url>
    cd krushi-sathi
    ```
 
-2. **Install dependencies**:
+2. **Install Node.js** (if not already installed)
+   - Download from https://nodejs.org/
+   - Verify installation: `node --version`
+
+3. **Install project dependencies**
    ```bash
    npm install
    ```
 
-3. **Configure environment variables** (optional):
-   Create a `.env.local` file:
-   ```env
-   GEMINI_API_KEY=your_api_key_here
-   ```
-
-4. **Start development server**:
+4. **Start the application**
    ```bash
    npm run dev
    ```
 
-5. **Open browser**:
-   Navigate to `http://localhost:3000`
+5. **Open in browser**
+   - Navigate to http://localhost:3000
 
-6. **Build for production**:
-   ```bash
-   npm run build
-   npm run preview
-   ```
+### First-Time Setup Notes
 
----
+- The database will be automatically created on first run
+- No additional configuration needed
+- All dependencies are installed via `npm install`
+- The default admin account is pre-configured
 
-## Usage Guide
+## Troubleshooting
 
-### First-Time User Flow
+### Port Already in Use
 
-1. **Landing Page**: Browse features and platform benefits
-2. **Registration**: Click "Get Started" → Select role → Fill registration form
-3. **Login**: Enter credentials and select matching role
-4. **Dashboard**: Redirected to role-specific homepage
+If you see an error about ports 3000 or 3001 being in use:
 
-### Farmer Workflow
+**Option 1**: Kill the process using the port
+```bash
+# On Mac/Linux
+lsof -ti:3000 | xargs kill
+lsof -ti:3001 | xargs kill
 
-1. **Dashboard**: View personalized recommendations and quick actions
-2. **Rent Equipment**: 
-   - Browse available equipment
-   - Check distance and pricing
-   - Book instantly
-3. **Hire Labor**: 
-   - Filter by skill
-   - Review worker profiles
-   - Contact directly
-4. **Check Weather**: 
-   - View 5-day forecast
-   - Plan farming activities
-5. **Market Prices**: 
-   - Compare commodity prices
-   - Identify best selling opportunities
-
-### Seller Workflow
-
-1. **Dashboard**: Monitor sales, bookings, and messages
-2. **Manage Listings**: Add/edit equipment and inputs
-3. **Handle Bookings**: Accept/reject farmer requests
-4. **Communicate**: Respond to farmer inquiries
-5. **Analytics**: Track weekly performance trends
-
----
-
-## User Roles
-
-### Farmer (Primary User)
-- **Goal**: Access modern equipment, labor, and agricultural intelligence
-- **Pain Points**: High equipment costs, unreliable labor, market information asymmetry
-- **Value Proposition**: Affordable access to resources that increase productivity
-
-### Seller (Equipment Owners)
-- **Goal**: Monetize idle agricultural equipment and inputs
-- **Pain Points**: Finding customers, managing bookings, pricing optimization
-- **Value Proposition**: Direct access to farmer network with built-in trust
-
-### Laborer (Farm Workers)
-- **Goal**: Find consistent work opportunities with fair wages
-- **Pain Points**: Seasonal unemployment, lack of job visibility, wage disputes
-- **Value Proposition**: Verified job marketplace with transparent pricing
-
----
-
-## Key Functionalities
-
-### 1. Location-Based Services
-- **Geolocation API**: Detects user's current location
-- **Nominatim Reverse Geocoding**: Converts coordinates to city/state names
-- **Distance Calculation**: Shows equipment availability by proximity
-
-### 2. Multi-Language Support
-- **8 Languages**: Full UI translation for major Indian languages
-- **Context-Based**: React Context API for global state management
-- **Persistent**: Language preference saved in localStorage
-
-### 3. Real-Time Weather Integration
-- **OpenWeatherMap API**: Current conditions and 5-day forecasts
-- **Fallback Mechanism**: Mock data when API unavailable
-- **Location-Aware**: Weather for user's current city
-
-### 4. Local Data Persistence
-- **User Authentication**: Stored in localStorage
-- **Session Management**: Active user in sessionStorage
-- **Profile Pictures**: Base64-encoded images in localStorage
-
-### 5. Responsive Design
-- **Mobile-First**: Optimized for smartphone screens
-- **Tailwind CSS**: Utility-first responsive classes
-- **Touch-Friendly**: Large tap targets and horizontal scrolling
-
----
-
-## Multi-Language Support
-
-### Supported Languages
-
-| Code | Language | Native Name |
-|------|----------|-------------|
-| `en` | English | English |
-| `hi` | Hindi | हिंदी |
-| `mr` | Marathi | मराठी |
-| `ta` | Tamil | தமிழ் |
-| `te` | Telugu | తెలుగు |
-| `kn` | Kannada | ಕನ್ನಡ |
-| `gu` | Gujarati | ગુજરાતી |
-| `bn` | Bengali | বাংলা |
-
-### Implementation Details
-
-**Translation Structure**:
-```typescript
-const translations = {
-  welcome: {
-    en: 'Welcome',
-    hi: 'स्वागत है',
-    mr: 'स्वागत आहे',
-    // ... other languages
-  }
-};
+# On Windows
+netstat -ano | findstr :3000
+taskkill /PID <PID> /F
 ```
 
-**Usage in Components**:
-```typescript
-const { t } = useLanguage();
-return <h1>{t('welcome')}</h1>;
+**Option 2**: Change the port in the code
+- Backend: Edit `server/server.js` (line with `const PORT = 3001`)
+- Frontend: Vite will automatically try the next available port
+
+### Database Issues
+
+If you encounter database errors:
+1. Delete `server/krushi-sathi.db`
+2. Restart the server - it will recreate the database
+
+### Module Not Found Errors
+
+```bash
+# Clear node_modules and reinstall
+rm -rf node_modules package-lock.json
+npm install
 ```
 
-**Language Selector**: Available in header of all authenticated pages
+### CORS Errors
 
----
+Ensure both servers are running:
+- Backend on port 3001
+- Frontend on port 3000
 
-## Future Enhancements
+## Development
 
-### Phase 1 (MVP Improvements)
-- [ ] Backend API integration (Node.js/Express or Firebase)
-- [ ] Real database (PostgreSQL/MongoDB)
-- [ ] Payment gateway integration (Razorpay/Stripe)
-- [ ] SMS/Email notifications
-- [ ] GPS-based live tracking
+### Adding New Features
 
-### Phase 2 (Advanced Features)
-- [ ] AI-powered crop recommendation system
-- [ ] Soil health analysis via image recognition
-- [ ] Peer-to-peer farmer community forum
-- [ ] Government scheme integration
-- [ ] Insurance and loan calculator
+1. **Backend**: Add routes in `server/routes/`
+2. **Frontend**: Add pages in `pages/`
+3. **Database**: Modify schema in `server/database.js`
 
-### Phase 3 (Scale & Expansion)
-- [ ] Mobile app (React Native)
-- [ ] Offline mode with sync
-- [ ] Voice assistant in regional languages
-- [ ] Blockchain-based supply chain tracking
-- [ ] Drone/IoT sensor integration
+### Code Style
 
----
+- TypeScript for frontend
+- ES6+ JavaScript for backend
+- Functional React components
+
+## Production Deployment
+
+### Build for Production
+
+```bash
+npm run build
+```
+
+This creates an optimized build in the `dist/` folder.
+
+### Environment Variables
+
+For production, create a `.env` file:
+```env
+PORT=3001
+NODE_ENV=production
+```
+
+### Security Checklist
+
+- [ ] Change default admin password
+- [ ] Use environment variables for sensitive data
+- [ ] Enable HTTPS
+- [ ] Add rate limiting
+- [ ] Implement proper password hashing (currently plain text)
+- [ ] Add input validation and sanitization
 
 ## Contributing
 
-Contributions are welcome! Please follow these guidelines:
-
 1. Fork the repository
-2. Create a feature branch (`git checkout -b feature/AmazingFeature`)
-3. Commit changes (`git commit -m 'Add some AmazingFeature'`)
-4. Push to branch (`git push origin feature/AmazingFeature`)
+2. Create a feature branch (`git checkout -b feature/amazing-feature`)
+3. Commit your changes (`git commit -m 'Add amazing feature'`)
+4. Push to the branch (`git push origin feature/amazing-feature`)
 5. Open a Pull Request
-
----
 
 ## License
 
 This project is licensed under the MIT License.
 
----
+## Support
 
-## Contact & Support
-
-- **Project Repository**: [GitHub Link]
-- **Documentation**: [Wiki Link]
-- **Issues**: [Issue Tracker]
-- **Email**: support@krushisathi.in
-
----
+For issues and questions:
+- Create an issue on GitHub
+- Contact the development team
 
 ## Acknowledgments
 
-- **Images**: Unsplash, Picsum Photos
-- **Icons**: Custom SVG components
-- **Weather Data**: OpenWeatherMap API
-- **Mapping**: OpenStreetMap (Nominatim)
-- **Inspiration**: Indian agricultural community and their challenges
+- Built with React and Express
+- SQLite for lightweight database
+- Vite for fast development experience
 
 ---
 
-**Built with ❤️ for Indian Farmers**
+**Happy Farming! 🌾**

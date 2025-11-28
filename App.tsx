@@ -13,6 +13,7 @@ import MarketPricePage from './pages/farmer/MarketPricePage';
 import HireLabourPage from './pages/farmer/HireLabourPage';
 import SellerHomePage from './pages/seller/SellerHomePage';
 import LabourerHomePage from './pages/labourer/LabourerHomePage';
+import DatabaseViewerPage from './pages/DatabaseViewerPage';
 
 const App: React.FC = () => {
   return (
@@ -30,6 +31,7 @@ const App: React.FC = () => {
           <Route path="/farmer/hire-labour" element={<HireLabourPage />} />
           <Route path="/seller" element={<SellerHomePage />} />
           <Route path="/labourer" element={<LabourerHomePage />} />
+          <Route path="/admin/database" element={<DatabaseViewerPage />} />
         </Routes>
       </HashRouter>
     </LanguageProvider>

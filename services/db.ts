@@ -1,60 +1,52 @@
-
 import { User, UserRegistrationData } from '../types';
 
-const DB_KEY = 'krushi-sathi-users';
+const API_URL = 'http://localhost:3001/api';
 const SESSION_KEY = 'krushi-sathi-session';
 
 // --- User Management ---
 
-const getUsers = (): User[] => {
+export const registerUser = async (userData: UserRegistrationData): Promise<User> => {
     try {
-        const usersJson = localStorage.getItem(DB_KEY);
-        return usersJson ? JSON.parse(usersJson) : [];
-    } catch (error) {
-        console.error("Failed to parse users from localStorage", error);
-        return [];
+        const response = await fetch(`${API_URL}/users/register`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(userData),
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || 'Registration failed');
+        }
+
+        return data.user;
+    } catch (error: any) {
+        throw new Error(error.message || 'Failed to register user');
     }
 };
 
-const saveUsers = (users: User[]): void => {
-    localStorage.setItem(DB_KEY, JSON.stringify(users));
-};
+export const loginUser = async (email: string, password: string): Promise<User> => {
+    try {
+        const response = await fetch(`${API_URL}/users/login`, {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ email, password }),
+        });
 
-export const registerUser = (userData: UserRegistrationData): Promise<User> => {
-    return new Promise((resolve, reject) => {
-        setTimeout(() => { // Simulate network delay
-            const users = getUsers();
-            const existingUser = users.find(user => user.email.toLowerCase() === userData.email.toLowerCase());
+        const data = await response.json();
 
-            if (existingUser) {
-                return reject(new Error('An account with this email already exists.'));
-            }
+        if (!response.ok) {
+            throw new Error(data.error || 'Login failed');
+        }
 
-            const newUser: User = {
-                id: Date.now().toString(),
-                ...userData,
-            };
-
-            users.push(newUser);
-            saveUsers(users);
-            resolve(newUser);
-        }, 500);
-    });
-};
-
-export const loginUser = (email: string, password: string): Promise<User> => {
-     return new Promise((resolve, reject) => {
-        setTimeout(() => { // Simulate network delay
-            const users = getUsers();
-            const user = users.find(u => u.email.toLowerCase() === email.toLowerCase());
-
-            if (!user || user.password !== password) {
-                return reject(new Error('Invalid email or password.'));
-            }
-            
-            resolve(user);
-        }, 500);
-    });
+        return data.user;
+    } catch (error: any) {
+        throw new Error(error.message || 'Failed to login');
+    }
 };
 
 
